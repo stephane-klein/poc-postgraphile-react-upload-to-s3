@@ -1,0 +1,6 @@
+/scripts
+Dockerfile
+docker-compose.yml
+README.md
+.eslintrc.json
+/node_modules
