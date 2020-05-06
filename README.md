@@ -1,4 +1,11 @@
-# Dummy Contact application based on Postgraphile + ReactJS 
+# Dummy Contact application based on Postgraphile + ReactJS with GraphQL file upload support
+
+GraphQL file upload is based on:
+
+- Backend: [`graphile-contrib/postgraphile-plugin-upload-field`](https://github.com/graphile-contrib/postgraphile-plugin-upload-field)
+- Frontend: [`jaydenseric/apollo-upload-client`](https://github.com/jaydenseric/apollo-upload-client)
+
+Attachments files are stored in [Minio](https://min.io/) Object Storage server (compatible with [S3](https://en.wikipedia.org/wiki/Amazon_S3) API).
 
 ## Prerequisites
 

@@ -1,5 +1,7 @@
 FROM node:12.10-alpine
 
+RUN apk update -y && apk add git
+
 WORKDIR app/
 
 COPY src/ src/

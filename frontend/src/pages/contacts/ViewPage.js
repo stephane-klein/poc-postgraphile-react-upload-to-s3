@@ -1,4 +1,6 @@
+/** @jsx jsx */
 import React from 'react';
+import { css, jsx} from '@emotion/core';
 import { Link } from 'react-router-dom';
 import gql from 'graphql-tag';
 import { useQuery } from '@apollo/react-hooks';
@@ -16,10 +18,11 @@ const ContactsViewPage = ({ match }) => {
     const { data } = useQuery(
         gql`
             query MyQuery($id: UUID!) {
-                contactById(id: $id) {
+                contact(id: $id) {
                     email
                     firstname
                     lastname
+                    photoFile
                 }
             }
         `,
@@ -36,7 +39,7 @@ const ContactsViewPage = ({ match }) => {
                 data
                     ? (
                         <>
-                            <h2>Contacts: {data.contactById.firstname} {data.contactById.lastname}</h2>
+                            <h2>Contacts: {data.contact.firstname} {data.contact.lastname}</h2>
 
                             <ButtonLink as={Link}
                                 to='./edit'
@@ -46,16 +49,27 @@ const ContactsViewPage = ({ match }) => {
                             <FieldGroup>
                                 <FieldRow>
                                     <FieldLabel>Email:</FieldLabel>
-                                    <FieldValue>{data.contactById.email}</FieldValue>
+                                    <FieldValue>{data.contact.email}</FieldValue>
                                 </FieldRow>
                                 <FieldRow>
                                     <FieldLabel>Firstname:</FieldLabel>
-                                    <FieldValue>{data.contactById.firstname}</FieldValue>
+                                    <FieldValue>{data.contact.firstname}</FieldValue>
                                 </FieldRow>
                                 <FieldRow>
                                     <FieldLabel>Lastname:</FieldLabel>
-                                    <FieldValue>{data.contactById.lastname}</FieldValue>
-                                </FieldRow>
+                                    <FieldValue>{data.contact.lastname}</FieldValue>
+                               </FieldRow>
+                               <FieldRow>
+                                    <FieldLabel>Photo:</FieldLabel>
+                                    <FieldValue>
+                                        <img
+                                            css={css`
+                                                width: 150px;
+                                            `}
+                                            src={`http://127.0.0.1:5000/attachments/${data.contact.photoFile}`}
+                                        />
+                                    </FieldValue>
+                               </FieldRow>
                             </FieldGroup>
                         </>
                     ) : (

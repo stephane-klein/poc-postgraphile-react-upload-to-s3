@@ -1,37 +1,78 @@
+const fs = require("fs");
 const { join } = require('path');
 const { readFile } = require('fs');
 const { promisify } = require('util');
+const { v4: uuidv4 } = require('uuid');
+const Minio = require('minio');
 
 const Koa = require('koa');
+const mount = require('koa-mount');
+const KoaS3ProxyServe = require('koa-s3-proxy');
 const { postgraphile } = require('postgraphile');
 const { makeAddInflectorsPlugin } = require('graphile-utils');
 const { NodePlugin } = require('graphile-build');
 const ConnectionFilterPlugin = require('postgraphile-plugin-connection-filter');
 const PgSimplifyInflectorPlugin = require('@graphile-contrib/pg-simplify-inflector');
+const PostGraphileUploadFieldPlugin = require("postgraphile-plugin-upload-field");
+const { graphqlUploadKoa } = require('graphql-upload');
 const _ = require('koa-route');
 const cors = require('@koa/cors');
 const koaBody = require('koa-body');
 
-const readFilePromise = promisify(readFile);
 const config = require('./config.js');
 
 const app = new Koa();
 
+Minio.Client.prototype.putObject = promisify(Minio.Client.prototype.putObject);
+
 if (config.get('enableCors')) {
     app.use(cors());
 }
+
+var minioClient;
+
+if (config.get('s3Attachments.enable')) {
+    minioClient = new Minio.Client({
+        endPoint: config.get('s3Attachments.endPoint'),
+        port: config.get('s3Attachments.port'),
+        useSSL: config.get('s3Attachments.useSSL'),
+        accessKey: config.get('s3Attachments.accessKey'),
+        secretKey: config.get('s3Attachments.secretKey')
+    });
+
+    app.use(
+        mount(
+            '/attachments/',
+            KoaS3ProxyServe({
+                endPoint: config.get('s3Attachments.endPoint'),
+                port: config.get('s3Attachments.port'),
+                useSSL: config.get('s3Attachments.useSSL'),
+                accessKey: config.get('s3Attachments.accessKey'),
+                secretKey: config.get('s3Attachments.secretKey'),
+                bucketName: config.get('s3Attachments.bucketName')
+            })
+        )
+    );
+}
+
 app.use(koaBody());
 
-// Route to get version
-app.use(_.get('/version.json', async(ctx) => {
+async function resolveUpload(upload) {
+    var { filename, createReadStream } = upload;
+    const stream = createReadStream();
+    filename = `${uuidv4()}/${filename}`;
     try {
-        ctx.body = await readFilePromise(join(__dirname, '/../tmp/version.json'));
-        ctx.response.set('Content-Type', 'application/json');
-    } catch (error) {
-        console.error(error);
-        ctx.throw(500, 'Internal server error');
+        await minioClient.putObject(
+            'attachments',
+            filename,
+            stream
+        );
+    } catch (e) {
+        console.log(e);
     }
-}));
+    return filename;
+}
+
 
 // More information about this code, see « Is there a way to disable introspection? » (https://github.com/graphile/postgraphile/issues/971)
 app.use(async(ctx, next) => {
@@ -55,6 +96,8 @@ app.use(async(ctx, next) => {
         ctx.throw(401, 'Unauthorized');
     }
 });
+
+app.use(graphqlUploadKoa());
 
 // Postgraphile middleware
 app.use(
@@ -84,10 +127,21 @@ app.use(
                         }
                     },
                     true
-                )
+                ),
+                PostGraphileUploadFieldPlugin
             ],
             enableCors: false,
-            allowExplain: () => config.get('allowExplain')
+            allowExplain: () => config.get('allowExplain'),
+            graphileBuildOptions: {
+                uploadFieldDefinitions: [
+                    {
+                        match: ({ column }) => {
+                            return column.endsWith("_file");
+                        },
+                        resolve: resolveUpload
+                    }
+                ]
+            }
         })
     )
 );

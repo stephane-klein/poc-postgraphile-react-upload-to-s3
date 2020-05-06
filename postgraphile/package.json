@@ -11,11 +11,17 @@
     "convict": "5.2.0",
     "graphile-build": "4.6.0",
     "graphile-utils": "4.6.0",
+    "graphql-upload": "^10.0.0",
     "koa": "2.11.0",
     "koa-body": "4.1.1",
+    "koa-mount": "4.0.0",
     "koa-route": "3.2.0",
+    "koa-s3-proxy": "https://github.com/stephane-klein/koa-s3-proxy/#0e862ac8ad2a71aba062e93a78dd8ce06b52222a",
+    "minio": "7.0.16",
     "postgraphile": "4.6.0",
-    "postgraphile-plugin-connection-filter": "1.x"
+    "postgraphile-plugin-connection-filter": "1.x",
+    "postgraphile-plugin-upload-field": "1.0.0-alpha.10",
+    "uuid": "^8.0.0"
   },
   "scripts": {
     "start": "node src/index.js",

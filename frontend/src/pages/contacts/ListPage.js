@@ -10,17 +10,18 @@ const ContactsListPage = () => {
     const { data } = useQuery(
         gql`
             query MyQuery {
-                allContacts(first: 20, orderBy: CREATED_AT_DESC) {
+                contacts(first: 20, orderBy: CREATED_AT_DESC) {
                     nodes {
-                        id
                         email
-                        lastname
                         firstname
+                        id
+                        lastname
                     }
                 }
             }
         `
     );
+    console.log(data);
 
     return (
         <Layout>
@@ -43,7 +44,7 @@ const ContactsListPage = () => {
                                 </tr>
                             </thead>
                             <tbody>
-                                {data.allContacts.nodes.map((node, index) => (
+                                {data.contacts.nodes.map((node, index) => (
                                     <tr key={index}>
                                         <td><Link to={`./${node.id}/`}>{node.email}</Link></td>
                                         <td><Link to={`./${node.id}/`}>{node.firstname}</Link></td>

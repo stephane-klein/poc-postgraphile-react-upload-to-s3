@@ -40,7 +40,7 @@ const config = Convict({
     enableCors: {
         doc: 'Boolean to enable/disable CORS',
         format: Boolean,
-        default: false,
+        default: true,
         env: 'GRAPHQL_API_ENABLE_CORS'
     },
     allowExplain: {
@@ -97,6 +97,43 @@ const config = Convict({
             format: Boolean,
             default: true,
             env: 'GRAPHQL_API_ENABLE_POSTGRES_WATCH'
+        }
+    },
+    s3Attachments: {
+        enable: {
+            format: Boolean,
+            default: false,
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_ENABLE'
+        },
+        endPoint: {
+            format: String,
+            default: '127.0.0.1',
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_ENDPOINT'
+        },
+        port: {
+            format: Number,
+            default: 9000,
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_PORT'
+        },
+        useSSL: {
+            format: Boolean,
+            default: false,
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_USESSL'
+        },
+        accessKey: {
+            format: String,
+            default: 'admin',
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_ACCESSKEY'
+        },
+        secretKey: {
+            format: String,
+            default: 'password',
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_SECRETKEY'
+        },
+        bucketName: {
+            format: String,
+            default: 'attachments',
+            env: 'GRAPHQL_API_S3_ATTACHMENTS_BUCKETNAME'
         }
     }
 });

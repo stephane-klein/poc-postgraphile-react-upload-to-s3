@@ -1,11 +1,11 @@
 import {
     ApolloClient as _ApolloClient,
-    InMemoryCache,
-    HttpLink
+    InMemoryCache
 } from 'apollo-boost';
+import { createUploadLink } from 'apollo-upload-client'
 
 const ApolloClient = new _ApolloClient({
-    link: new HttpLink({
+    link: createUploadLink({
         uri: 'http://127.0.0.1:5000/graphql'
     }),
     cache: new InMemoryCache(),

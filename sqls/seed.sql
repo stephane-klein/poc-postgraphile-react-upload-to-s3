@@ -9,6 +9,7 @@ CREATE TABLE public.contacts (
     email          VARCHAR(255) NOT NULL,
     firstname      VARCHAR(255),
     lastname       VARCHAR(255),
+    photo_file     VARCHAR(255) DEFAULT NULL,
     created_at     TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 

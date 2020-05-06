@@ -17,10 +17,11 @@ const ContactsEditPage = ({ match }) => {
     const { data } = useQuery(
         gql`
             query MyQuery($id: UUID!) {
-                contactById(id: $id) {
+                contact(id: $id) {
                     email
                     firstname
                     lastname
+                    photoFile
                 }
             }
         `,
@@ -32,8 +33,8 @@ const ContactsEditPage = ({ match }) => {
     );
 
     const [updateContact] = useMutation(
-        gql`mutation updateContactById ($id: UUID!, $input: ContactPatch!) {
-            updateContactById(input: {id: $id, contactPatch: $input}) {
+        gql`mutation updateContact ($id: UUID!, $input: ContactPatch!) {
+            updateContact(input: {id: $id, patch: $input}) {
                 clientMutationId
             }
         }`
@@ -45,10 +46,10 @@ const ContactsEditPage = ({ match }) => {
                 data
                     ? (
                         <>
-                            <h2>Update Contacts: {data.contactById.firstname} {data.contactById.lastname}</h2>
+                            <h2>Update Contacts: {data.contact.firstname} {data.contact.lastname}</h2>
 
                             <Formik
-                                initialValues={data.contactById}
+                                initialValues={data.contact}
                                 onSubmit={(values, actions) => {
                                     delete values.__typename;
                                     updateContact({
@@ -59,44 +60,57 @@ const ContactsEditPage = ({ match }) => {
                                     });
                                 }}
                             >
-                                <Form>
-                                    <FieldGroup>
-                                        <FieldRow>
-                                            <FieldLabel>Email:</FieldLabel>
-                                            <FieldInput
-                                                as={Field}
-                                                type='email'
-                                                name='email'
-                                                placeholder='Email'
-                                            />
-                                        </FieldRow>
-                                        <FieldRow>
-                                            <FieldLabel>Firstname:</FieldLabel>
-                                            <FieldInput
-                                                as={Field}
-                                                name='firstname'
-                                                placeholder='Firstname'
-                                            />
-                                        </FieldRow>
-                                        <FieldRow>
-                                            <FieldLabel>Lastname:</FieldLabel>
-                                            <FieldInput
-                                                as={Field}
-                                                name='lastname'
-                                                placeholder='Lastname'
-                                            />
-                                        </FieldRow>
-                                    </FieldGroup>
+                                {({ setFieldValue }) => (
+                                    <Form>
+                                        <FieldGroup>
+                                            <FieldRow>
+                                                <FieldLabel>Email:</FieldLabel>
+                                                <FieldInput
+                                                    as={Field}
+                                                    type='email'
+                                                    name='email'
+                                                    placeholder='Email'
+                                                />
+                                            </FieldRow>
+                                            <FieldRow>
+                                                <FieldLabel>Firstname:</FieldLabel>
+                                                <FieldInput
+                                                    as={Field}
+                                                    name='firstname'
+                                                    placeholder='Firstname'
+                                                />
+                                            </FieldRow>
+                                            <FieldRow>
+                                                <FieldLabel>Lastname:</FieldLabel>
+                                                <FieldInput
+                                                    as={Field}
+                                                    name='lastname'
+                                                    placeholder='Lastname'
+                                                />
+                                            </FieldRow>
+                                            <FieldRow>
+                                                <FieldLabel>Photo:</FieldLabel>
+                                                <input
+                                                    type='file'
+                                                    name='photoFile'
+                                                    accept='image/*'
+                                                    onChange={(event) => {
+                                                        setFieldValue('photoFile', event.target.files[0]);
+                                                    }}
+                                                />
+                                            </FieldRow>
+                                        </FieldGroup>
 
-                                    <ButtonLink as={Link}
-                                        to='./'
-                                    >Cancel
-                                    </ButtonLink>
-                                    <ButtonLink as='button'
-                                        type='submit'
-                                    >Submit
-                                    </ButtonLink>
-                                </Form>
+                                        <ButtonLink as={Link}
+                                            to='./'
+                                        >Cancel
+                                        </ButtonLink>
+                                        <ButtonLink as='button'
+                                            type='submit'
+                                        >Submit
+                                        </ButtonLink>
+                                    </Form>
+                                )}
                             </Formik>
                         </>
                     ) : (
