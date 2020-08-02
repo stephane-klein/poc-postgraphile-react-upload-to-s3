@@ -7,21 +7,21 @@
   "private": true,
   "dependencies": {
     "@graphile-contrib/pg-simplify-inflector": "6.0.0",
-    "@koa/cors": "3.0.0",
-    "convict": "5.2.0",
-    "graphile-build": "4.6.0",
-    "graphile-utils": "4.6.0",
-    "graphql-upload": "^10.0.0",
-    "koa": "2.11.0",
-    "koa-body": "4.1.1",
+    "@koa/cors": "3.1.0",
+    "convict": "6.0.0",
+    "graphile-build": "4.7.0",
+    "graphile-utils": "4.7.0",
+    "graphql-upload": "11.0.0",
+    "koa": "2.13.0",
+    "koa-body": "4.2.0",
     "koa-mount": "4.0.0",
     "koa-route": "3.2.0",
-    "koa-s3-proxy": "https://github.com/stephane-klein/koa-s3-proxy/#0e862ac8ad2a71aba062e93a78dd8ce06b52222a",
+    "koa-s3-proxy": "0.1.4",
     "minio": "7.0.16",
-    "postgraphile": "4.6.0",
-    "postgraphile-plugin-connection-filter": "1.x",
+    "postgraphile": "4.7.0",
+    "postgraphile-plugin-connection-filter": "2.0.0",
     "postgraphile-plugin-upload-field": "1.0.0-alpha.10",
-    "uuid": "^8.0.0"
+    "uuid": "8.3.0"
   },
   "scripts": {
     "start": "node src/index.js",
@@ -35,6 +35,6 @@
     "eslint-plugin-node": "11.1.0",
     "eslint-plugin-promise": "4.2.1",
     "eslint-plugin-standard": "4.0.1",
-    "nodemon": "2.0.3"
+    "nodemon": "2.0.4"
   }
 }

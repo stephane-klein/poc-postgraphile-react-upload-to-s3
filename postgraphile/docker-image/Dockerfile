@@ -1,6 +1,6 @@
-FROM node:12.10-alpine
+FROM node:12.18.3-alpine
 
-RUN apk update -y && apk add git
+RUN apk update && apk add git
 
 WORKDIR app/
 
